@@ -28,7 +28,6 @@ let package = Package(
               dependencies: ["solari", "SDL"]),
         .testTarget(
             name: "solariTests",
-            dependencies: [
-              "solari"]),
+            dependencies: ["solari", "Nimble"]),
     ]
 )

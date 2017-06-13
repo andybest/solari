@@ -49,7 +49,7 @@ public struct Transform {
     
     public init() {
         position = Vector3.zero
-        rotation = Quaternion.identity
+        rotation = Quaternion(axisAngle: Vector4(Vector3.up.x, Vector3.up.y, Vector3.up.z, 0))
     }
     
     public var up: Vector3 {
