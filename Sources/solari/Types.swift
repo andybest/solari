@@ -71,9 +71,19 @@ public protocol SceneObject {
 // MARK: - Renderable
 
 public protocol Renderable: SceneObject {
-    var surfaceColor: Vector3 { get set }
+    var material: Material { get set }
     
     func getIntersection(intersection: inout IntersectionResult, ray: Ray) -> Bool
+}
+
+// MARK: - Material
+
+public struct Material {
+    public var surfaceColor: Vector3
+    
+    init() {
+        surfaceColor = Vector3.zero
+    }
 }
 
 // MARK: - Light

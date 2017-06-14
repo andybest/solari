@@ -58,19 +58,15 @@ var event = SDL_Event()
 var scene = Scene()
 scene.camera.focalLength = 0.018
 
-for _ in 0..<50 {
-    var sphere = Sphere(radius: Scalar(arc4random() % 5))
-    sphere.transform.position.x = Scalar(arc4random() % 20) - 10.0
-    sphere.transform.position.y = Scalar(arc4random() % 20) - 10.0
-    sphere.transform.position.z = Scalar(arc4random() % 50) - 25.0
-    
-    if abs(sphere.transform.position.z) < sphere.radius {
-        sphere.transform.position.z += sphere.radius
-    }
-    sphere.surfaceColor = Vector3(Scalar(arc4random() % 255) / 255.0, Scalar(arc4random() % 255) / 255.0, Scalar(arc4random() % 255) / 255.0)
-    
-    scene.addRenderable(sphere)
-}
+var tri = Triangle(v0: Vector3(1, 1, 0), v1: Vector3(0, 1, 0), v2: Vector3(0, 0, 0))
+tri.transform.position.z = 10
+tri.material.surfaceColor = Vector3(1, 0, 0)
+scene.addRenderable(tri)
+
+var sphere = generatePolySphere(radius: 5, divisions: 5)
+sphere.transform.position.z = 10
+sphere.material.surfaceColor = Vector3(0, 1, 0)
+scene.addRenderable(sphere)
 
 while isRunning {
     SDL_PollEvent(&event)
@@ -93,7 +89,9 @@ while isRunning {
         }
     }
     
-    scene.camera.transform.rotate(axis: Vector3.up, angle: Scalar.pi / 90.0)
+    //scene.camera.transform.rotate(axis: Vector3.up, angle: Scalar.pi / 90.0)
+    tri.transform.rotate(axis: Vector3.up, angle: Scalar.pi / 90.0)
+    scene.renderables[0] = tri
     
     let texture = Texture(renderer: renderer, surface: imageSurface).sdlUnwrap
     
