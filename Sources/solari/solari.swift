@@ -58,7 +58,7 @@ public struct Solari {
         var didIntersect = false
         var closestDist = Scalar.greatestFiniteMagnitude
         var closestObject: Renderable?
-        //var color: Vector3 = Vector3.zero
+        var color: Vector3 = Vector3.zero
         
         for o in scene.renderableObjects {
             if o.getIntersection(intersection: &intersection, ray: ray) {
@@ -66,13 +66,16 @@ public struct Solari {
                 if intersection.distance < closestDist {
                     closestDist = intersection.distance
                     closestObject = o
-                    //color = o.material.surfaceColor
+                    color = intersection.normal
+                    color.x = abs(color.x)
+                    color.y = abs(color.y)
+                    color.z = abs(color.z)
                 }
             }
         }
         
         if didIntersect {
-            let color = closestObject!.material.surfaceColor
+            //let color = closestObject!.material.surfaceColor
             //let color = closestIntersection!.normal
             //let color = Vector3(1, 0, 0)
             return 0xFF000000 | UInt32(color.x * 255.0) << 16 | UInt32(color.y * 255.0) << 8 | UInt32(color.z * 255.0)

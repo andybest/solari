@@ -63,7 +63,7 @@ tri.transform.position.z = 10
 tri.material.surfaceColor = Vector3(1, 0, 0)
 scene.addRenderable(tri)
 
-var sphere = generatePolySphere(radius: 5, divisions: 5)
+var sphere = generatePolySphere(radius: 2, divisions: 5)
 sphere.transform.position.z = 10
 sphere.material.surfaceColor = Vector3(0, 1, 0)
 scene.addRenderable(sphere)
@@ -91,7 +91,9 @@ while isRunning {
     
     //scene.camera.transform.rotate(axis: Vector3.up, angle: Scalar.pi / 90.0)
     tri.transform.rotate(axis: Vector3.up, angle: Scalar.pi / 90.0)
+    sphere.transform.rotate(axis: Vector3.up, angle: Scalar.pi / 90.0)
     scene.renderables[0] = tri
+    scene.renderables[1] = sphere
     
     let texture = Texture(renderer: renderer, surface: imageSurface).sdlUnwrap
     

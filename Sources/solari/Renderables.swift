@@ -139,7 +139,7 @@ public func generatePolySphere(radius: Scalar, divisions: Int) -> TriangleMesh {
     var normals = [Vector3](repeating: Vector3.zero, count: numVertices)
     var st = [Vector2](repeating: Vector2.zero, count: numVertices)
     
-    var u = -Scalar.twoPi
+    var u = -Scalar.halfPi
     var v = -Scalar.pi
     let du = Scalar.pi / Scalar(divisions)
     let dv = 2 * Scalar.pi / Scalar(divisions)
@@ -297,14 +297,13 @@ public struct TriangleMesh: Renderable {
         var N = [Vector3](repeating: Vector3.zero, count: numTris * 3)
         var texCoords = [Vector2](repeating: Vector2.zero, count: numTris * 3)
         var l = 0
-        
         k = 0
         for i in 0..<numFaces {
             for j in 0..<(faceIndex[i] - 2) {
                 trisIndex[l] = vertsIndex[k]
                 trisIndex[l + 1] = vertsIndex[k + j + 1]
                 trisIndex[l + 2] = vertsIndex[k + j + 2]
-               /* N[l] = normal[k]
+                /*N[l] = normal[k]
                 N[l + 1] = normal[k + j + 1]
                 N[l + 2] = normal[k + j + 2]
                 texCoords[l] = st[k]
@@ -330,9 +329,9 @@ public struct TriangleMesh: Renderable {
         var uvOut = Vector2.zero
         
         for i in 0..<numTris {
-            let v0 = vertices[trisIndex[j]] + transform.position
-            let v1 = vertices[trisIndex[j + 1]] + transform.position
-            let v2 = vertices[trisIndex[j + 2]] + transform.position
+            let v0 = vertices[trisIndex[j]] * transform.rotation + transform.position
+            let v1 = vertices[trisIndex[j + 1]] * transform.rotation + transform.position
+            let v2 = vertices[trisIndex[j + 2]] * transform.rotation + transform.position
             
             var triIntersection = IntersectionResult(distance: 0, position: Vector3.zero, normal: Vector3.zero)
             var uvs = Vector2.zero
@@ -344,8 +343,8 @@ public struct TriangleMesh: Renderable {
                     triIndex = i
                     didIntersect = true
                 }
-                j += 3
             }
+            j += 3
         }
         
         if didIntersect {
