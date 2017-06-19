@@ -36,8 +36,10 @@ public struct Solari {
         var pixelArr = [UInt32](repeating: 0, count: width * height)
         
         pixelArr.withUnsafeMutableBytes { pixels in
-            for y in 0..<height {
+            DispatchQueue.concurrentPerform(iterations: height) { y in
+            ///for y in 0..<height {
                 let yHeight = (Double(y) - halfHeight) * pixelStep
+                
                 for x in 0..<width {
                     let pixelPosition = Vector3((Double(x) - halfWidth) * pixelStep, yHeight, scene.camera.focalLength)
                     let rayDir = pixelPosition.normalized() * scene.camera.transform.rotation
@@ -47,6 +49,7 @@ public struct Solari {
                                       toByteOffset: (x + (y * width)) * MemoryLayout<UInt32>.stride,
                                       as: UInt32.self)
                 }
+                print("Rendered row \(y)")
             }
         }
         
@@ -75,12 +78,31 @@ public struct Solari {
         }
         
         if didIntersect {
-            //let color = closestObject!.material.surfaceColor
+            var color = closestObject!.material.surfaceColor
             //let color = closestIntersection!.normal
             //let color = Vector3(1, 0, 0)
+            color = color * calculateLightIntensity(scene: scene, intersection: intersection, object: closestObject!)
             return 0xFF000000 | UInt32(color.x * 255.0) << 16 | UInt32(color.y * 255.0) << 8 | UInt32(color.z * 255.0)
         }
         
         return 0xFF000000
+    }
+    
+    private static func calculateLightIntensity(scene: Scene, intersection: IntersectionResult, object: Renderable) -> Double {
+        var lightIntensity = 0.0
+        
+        var lightIntersection = IntersectionResult(distance: 0, position: Vector3.zero, normal: Vector3.zero)
+        for l in scene.sceneLights {
+            let lightDirection = (l.transform.position - intersection.position).normalized()
+            let lightRay = Ray(origin: l.transform.position, direction: lightDirection)
+            
+            if object.getIntersection(intersection: &lightIntersection, ray: lightRay) {
+                lightIntensity += max(0, lightIntersection.normal.normalized().dot(lightDirection)) * l.intensity
+            }
+        }
+        
+        if lightIntensity < 0 { return 0 }
+        if lightIntensity > 1 { return 1 }
+        return lightIntensity
     }
 }

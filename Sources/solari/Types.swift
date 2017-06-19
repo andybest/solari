@@ -91,3 +91,13 @@ public struct Material {
 public protocol Light: SceneObject {
     var intensity: Scalar { get set }
 }
+
+public struct PointLight: Light {
+    public var intensity: Scalar
+    public var transform: Transform
+    
+    public init() {
+        transform = Transform()
+        intensity = 1.0
+    }
+}

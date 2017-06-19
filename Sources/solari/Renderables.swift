@@ -127,6 +127,8 @@ private func intersectTriangle(v0: Vector3, v1: Vector3, v2: Vector3, intersecti
     let t = v0v2.dot(qvec) * invDet
     
     intersection.distance = t
+    intersection.normal = v0v2.cross(v0v1)
+    intersection.position = ray.origin + (ray.direction * t)
     uvs.x = u
     uvs.y = v
     
